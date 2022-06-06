@@ -52,7 +52,8 @@ export default function Homepage() {
     const uidd = uid();
     set(ref(db, `/${auth.currentUser.uid}/${uidd}`), {
       todo: todo,
-      uidd: uidd
+      uidd: uidd,
+      price: 12
     });
 
     setTodo("");
@@ -68,7 +69,7 @@ export default function Homepage() {
   const handleEditConfirm = () => {
     update(ref(db, `/${auth.currentUser.uid}/${tempUidd}`), {
       todo: todo,
-      tempUidd: tempUidd
+      //tempUidd: tempUidd
     });
 
     setTodo("");
@@ -82,40 +83,55 @@ export default function Homepage() {
 
   return (
     <div className="homepage">
-      <input
-        className="add-edit-input"
-        type="text"
-        placeholder="Add todo..."
-        value={todo}
-        onChange={(e) => setTodo(e.target.value)}
-      />
-
+      <div className="top">
+        <input
+          className="add-edit-input"
+          type="text"
+          placeholder="Add notes"
+          value={todo}
+          //set the value of todo when input changed
+          onChange={(e) => setTodo(e.target.value)}
+        />
+        {isEdit ? (
+          <div>
+          <button onClick={handleEditConfirm} className="add-confirm">confirm?</button>
+          </div>
+        ) : (
+          <div>
+            <button onClick={writeToDatabase} className="add-confirm" >Add</button>
+          </div>
+        )}
+      </div>
+        
+    
       {todos.map((todo,index) => (
+        //Map the saved data 
         <div key={index} className="todo">
-          <h1>{todo.todo}</h1>
-          <EditIcon
-            fontSize="large"
-            onClick={() => handleUpdate(todo)}
-            className="edit-button"
-          />
-          <DeleteIcon
-            fontSize="large"
-            onClick={() => handleDelete(todo.uidd)}
-            className="delete-button"
-          />
+          
+          <div className="prices">
+            <p>Price: {todo.price}</p>
+
+            <p>Amount Bought: 0.000232</p>     
+          </div>
+
+          <p>Notes: {todo.todo}</p>
+
+          <div className="icons">
+            <EditIcon
+              fontSize="large"
+              onClick={() => handleUpdate(todo)}
+              className="edit-button"
+            />
+            <DeleteIcon
+              fontSize="large"
+              onClick={() => handleDelete(todo.uidd)}
+              className="delete-button"
+            />
+          </div>
         </div>
       ))}
 
-      {isEdit ? (
-        <div>
-        <CheckIcon onClick={handleEditConfirm} className="add-confirm-icon"/>
-        </div>
-      ) : (
-        <div>
-          <AddIcon onClick={writeToDatabase} className="add-confirm-icon" />
-        </div>
-      )}
-        <LogoutIcon onClick={handleSignOut} className="logout-icon" />
+      <button onClick={handleSignOut} className="logout">sign out</button>
     </div>
   );
 }

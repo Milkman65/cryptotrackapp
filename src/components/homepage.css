@@ -1,6 +1,7 @@
 .homepage {
   background-color: rgb(165, 165, 165);
-  height: 100vh;
+  height: auto;
+  min-height: 100vh;
   padding: 1rem;
 }
 
@@ -38,7 +39,7 @@
 }
 
 .logout {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   right: 0;
   padding: 1.5rem;
@@ -59,4 +60,9 @@
   font-size: 1rem;
   width: 5rem;
   
+}
+
+.bottomInput input {
+  margin-top: 1rem;
+  border-radius: 0;
 }

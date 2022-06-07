@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { signOut, onAuthStateChanged } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import { auth, db } from "../firebase.js";
 import { useNavigate } from "react-router-dom";
 import { uid } from "uid";
 import { set, ref, onValue, remove, update } from "firebase/database";
 import "./homepage.css";
-import AddIcon from "@mui/icons-material/Add";
+
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import LogoutIcon from '@mui/icons-material/Logout';
-import CheckIcon from '@mui/icons-material/Check';
+
 
 export default function Homepage() {
   const [todo, setTodo] = useState("");
+  const [price, setPrice] = useState("");
+  const [amount, setAmount] = useState("");
+  const [currency, setCurrency] = useState("");
   const [todos, setTodos] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   const [tempUidd, setTempUidd] = useState("");
@@ -53,7 +55,9 @@ export default function Homepage() {
     set(ref(db, `/${auth.currentUser.uid}/${uidd}`), {
       todo: todo,
       uidd: uidd,
-      price: 12
+      price: price,
+      amount: amount,
+      currency: currency
     });
 
     setTodo("");
@@ -63,12 +67,18 @@ export default function Homepage() {
   const handleUpdate = (todo) => {
     setIsEdit(true);
     setTodo(todo.todo);
+    setCurrency(todo.currency);
+    setPrice(todo.price);
+    setAmount(todo.amount);
     setTempUidd(todo.uidd);
   };
 
   const handleEditConfirm = () => {
     update(ref(db, `/${auth.currentUser.uid}/${tempUidd}`), {
       todo: todo,
+      price: price,
+      amount: amount,
+      currency: currency
       //tempUidd: tempUidd
     });
 
@@ -92,6 +102,7 @@ export default function Homepage() {
           //set the value of todo when input changed
           onChange={(e) => setTodo(e.target.value)}
         />
+        
         {isEdit ? (
           <div>
           <button onClick={handleEditConfirm} className="add-confirm">confirm?</button>
@@ -101,7 +112,40 @@ export default function Homepage() {
             <button onClick={writeToDatabase} className="add-confirm" >Add</button>
           </div>
         )}
-      </div>
+
+
+        </div>
+
+
+        <div className="bottomInput">
+          <input
+            className="add-edit-input"
+            type="number"
+            placeholder="Add price"
+            value={price}
+            //set the value of todo when input changed
+            onChange={(e) => setPrice(e.target.value)}
+          />
+          <input
+            className="add-edit-input"
+            type="number"
+            placeholder="Add amount"
+            value={amount}
+            //set the value of todo when input changed
+            onChange={(e) => setAmount(e.target.value)}
+          />
+
+          <label for="cars">Choose a currency:</label>
+
+          <select name="currency" id="currency" value={currency} onChange={(e) => setCurrency(e.target.value)}>
+            <option value="btc">btc</option>
+            <option value="eth">eth</option>
+            <option value="doge">doge</option>
+            <option value="xrp">xrp</option>
+          </select>
+
+        </div>
+      
         
     
       {todos.map((todo,index) => (
@@ -111,11 +155,11 @@ export default function Homepage() {
           <div className="prices">
             <p>Price: {todo.price}</p>
 
-            <p>Amount Bought: 0.000232</p>     
+            <p>Amount Bought: {todo.amount}</p>     
           </div>
 
           <p>Notes: {todo.todo}</p>
-
+          <p>Currency: {todo.currency}</p>
           <div className="icons">
             <EditIcon
               fontSize="large"

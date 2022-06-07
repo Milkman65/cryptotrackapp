@@ -6,7 +6,7 @@ h1,p,a,button,input{
 
 .welcome{
     background-color: rgb(165, 165, 165);
-    height: 100vh;
+    height: auto;
     
 }
 .welcome > h1 {
